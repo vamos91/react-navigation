@@ -83,7 +83,7 @@ container: {
 
 `import { StatusBar } from 'expo-status-bar';`
 
-Ce composant est proposé par expo pour configurer la barre de status de votre mobile.
+* Ce composant est proposé par expo pour configurer la barre de status de votre mobile.
 
 Pour chaque fonctionnalité ou composant Expo, pensez à consulter la documentation fournie par Expo.
 
@@ -162,8 +162,8 @@ brew install watchman
 
 👉Mettez en place les liens suivants :
 
-Un lien nommé "go to page A" sur "HomeScreen" permettant de rediriger l'utilisateur vers "PageAScreen"
-Un lien nommé "go to Home" sur "PageAScreen" permettant de rediriger l'utilisateur vers "HomeScreen"
+- Un lien nommé "go to page A" sur "HomeScreen" permettant de rediriger l'utilisateur vers "PageAScreen"
+- Un lien nommé "go to Home" sur "PageAScreen" permettant de rediriger l'utilisateur vers "HomeScreen"
 
 
 ## 2 - NAVIGATION AVEC MENU
@@ -178,8 +178,8 @@ Un lien nommé "go to Home" sur "PageAScreen" permettant de rediriger l'utilisat
 
 👉 Customisez le menu en y ajoutant deux icons. Utilisez le lien suivant pour avoir la liste complète des icons disponibles dans React Native : https://icons.expo.fyi/ 
 
-Sélectionnez l'icône "home" pour "HomeScreen".
-Sélectionnez l'icône "heart" pour "PageAScreen.
+- Sélectionnez l'icône "home" pour "HomeScreen".
+- Sélectionnez l'icône "heart" pour "PageAScreen.
 
 
 
@@ -200,10 +200,10 @@ https://reactnavigation.org/docs/5.x/nesting-navigators
 
 👉 Mettez en place les liens suivants :
 
-Un lien nommé "go to page B" sur "PageAScreen" permettant de rediriger l'utilisateur vers "PageBScreen".
-Un lien nommé "go to page A" sur "PageBScreen" permettant de rediriger l'utilisateur vers "PageAScreen".
-Sauvegardez la fonction stack navigator générée dans une variable nommée "StackNavigator".
-Créez un BottomTabNavigator qui sera retourné dans le composant App et qui inclura le StackNavigator précédemment créé (votre menu affichera 2 onglets : “Home” qui sera relié au composant HomeScreen et “PagesStacks” qui sera relié à votre variable StackNavigator)
+* Un lien nommé "go to page B" sur "PageAScreen" permettant de rediriger l'utilisateur vers "PageBScreen".
+* Un lien nommé "go to page A" sur "PageBScreen" permettant de rediriger l'utilisateur vers "PageAScreen".
+* Sauvegardez la fonction stack navigator générée dans une variable nommée "StackNavigator".
+* Créez un BottomTabNavigator qui sera retourné dans le composant App et qui inclura le StackNavigator précédemment créé (votre menu affichera 2 onglets : “Home” qui sera relié au composant HomeScreen et “PagesStacks” qui sera relié à votre variable StackNavigator)
 👉 Customisez le menu en y ajoutant deux icons.
 
 Sélectionnez l'icône "home" pour "HomeScreen".
