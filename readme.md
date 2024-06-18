@@ -216,6 +216,9 @@ Et afficher le nom dans "PageBScreen"
 
 -----------------------------------------------------------------------------------------------------------------------------------------
 
+
+# La géolocalisation.
+
 **Expo propose un kit de développement pour accéder aux différentes fonctionnalités du device (Camera, Contacts, Géolocalisation, ...).**
 
 **La documentation pour manipuler ces fonctionalités est disponible ici : https://docs.expo.io/versions/latest/**
