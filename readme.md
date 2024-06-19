@@ -508,3 +508,235 @@ Dans tous les cas, pensez à bien lire la documentation dans Expo !
 👉 En utilisant un état nommé position, mettez à jour le composant grâce aux coordonnées reçues et matérialisez-les via un marqueur.
 
 
+----------------------------------------------------------------------------------------------------------
+
+# Localstorage
+
+## 1.1 Comment stocker des informations de manière pérenne côté Frontend ?
+Nous savons jusqu’à présent conserver des informations pérennes coté backend, notamment en les stockant en base de données.
+
+Côté Frontend, la mécanique des états ou celle de Redux permettent uniquement de garder des informations de manière temporaire, seulement pendant la navigation. Si on ferme notre application, ces informations sont réinitialisées donc perdues.
+
+## 1.2 Utiliser les cookies ?
+Les cookies permettent effectivement de faire en sorte que le navigateur puisse écrire des informations dans un fichier texte. Ces informations sont persistantes, même si l’utilisateur ferme son navigateur.
+
+Toutefois, en React Native, plus de navigateur donc impossible d’utiliser les cookies !
+
+## 1.3 La solution : Local Storage
+Heureusement, React native propose des fonctionnalités qui vont permettre de stocker des informations persistantes (même si on ferme l’application ou si on éteint le mobile) directement sur le mobile de chaque utilisateur, que ce soit sous IOS ou Android.
+
+Cette surcouche s’appelle le Local Storage, elle est proposée par défaut grâce à React Native.
+
+## 1.4 Comment stocker les informations ?
+Les informations vont pouvoir être stockées dans Le Local Storage sous le principe de clé/valeur.
+
+Ces données seront accessibles uniquement par votre application. Aucune autre application ne pourra récupérer ces informations.
+
+
+
+
+Les valeurs seront obligatoirement des chaînes de caractères. Si nous voulons stocker des objets ou des tableaux, il faudra alors les enregistrer en chaînes de caractères (JSON.stringify) et leur redonner vie (JSON.parse) lorsque nous voulons les utiliser.
+
+## 1.5 A quoi le Local Storage va servir ?
+Le Local Storage permet de conserver des informations persistantes. Imaginons un utilisateur qui s’est déjà inscrit : nous allons pouvoir stocker des informations pour l’identifier et lui éviter par exemple d’avoir à se reconnecter à chaque lancement de l’application.
+
+Vous voulez afficher des informations même si l’utilisateur est offline ? Vous allez pouvoir enregistrer ces informations lors de la navigation de l’utilisateur et lui recharger ces informations quand l’utilisateur lance à nouveau votre application, même s’il est hors connexion.
+
+## 1.6 Des contraintes ?
+Attention, l’espace réservé au Local Storage est limité sur Android (6 Mo) alors qu’il ne l’est pas sur iOS.
+
+Si nous souhaitons stocker des informations plus lourdes, il faudra alors passer par File System qui permet d’enregistrer des fichiers directement sur le mobile : https://docs.expo.io/versions/latest/sdk/filesystem/
+
+Tout comme le Local Storage, ces fichiers ne seront accessibles que par votre application.
+
+Attention toutefois, car la mécanique de File System nécessite l'autorisation explicite de l’utilisateur (contrairement au Local Storage).
+
+
+
+
+2 - STEP BY STEP
+## 2.1 Installation
+npm install @react-native-async-storage/async-storage --save
+
+## 2.2 Enregistrer une information
+
+```
+import React from 'react';
+import {Button, View} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function App() {
+ return (
+   <View>
+     <Button title="Save first name John"
+       onPress={()=> AsyncStorage.setItem("firstName", "John") } />
+   </View> 
+ )
+}
+```
+
+On importe AsyncStorage
+```
+import AsyncStorage from '@react-native-async-storage/async-storage';
+```
+
+On enregistre l’information en Local Storage
+AsyncStorage.setItem("firstName", "John")
+
+Pour enregistrer des informations, c’est simple. Il suffit d’utiliser setItem en précisant en premier argument la clé et en second argument la valeur sous forme de chaîne de caractères.
+
+## 2.3 Enregistrer un objet JS
+
+```
+import React from 'react';
+import {Button, View} from "react-native";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+var userData = {firstName: "John", lastName: "Doe"};
+
+export default function App() {
+ return (
+   <View>
+     <Button title="Save user data"
+      onPress={()=> AsyncStorage.setItem("user", JSON.stringify(userData)); }/>
+   </View>
+ )
+}
+```
+
+On initialise notre objet JS
+var userData = {firstName: "John", lastName: "Doe"};
+
+
+Transformation en chaîne de caractères
+JSON.stringify(userData)
+
+Nous ne pouvons enregistrer dans le Local Storage que des chaînes de caractères. Il faut donc transformer notre objet (ou un tableau) en chaîne de caractères en utilisant JSON.stringify() avant d’enregistrer sa valeur dans le Local Storage.
+
+## 2.4 Lire une information : getItem
+
+```
+import React from 'react';
+import {Button, View} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function App() {
+ return (
+   <View>
+     <Button title="Get first name saved"
+       onPress={()=> {
+         AsyncStorage.getItem("firstName", function(error, data) {
+           console.log(data);
+         });
+       }
+   </View>
+ );
+}
+
+```
+On récupère la valeur enregistrée
+
+```
+AsyncStorage.getItem("firstName", function(error, data) {
+ console.log(data);
+});
+
+```
+Pour récupérer une information dans le Local Storage, nous allons utiliser getItem en précisant la clé que nous souhaitons récupérer.
+
+Attention getItem (comme setItem) est asynchrone. Il va donc falloir passer par une mécanique de callback si on souhaite exploiter les informations récupérées ensuite. Ici, c’est le cas, nous souhaitons afficher les informations dans un console.log.
+
+## 2.5 Lire un objet
+
+```
+import React from 'react';
+import {Button, View} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function App() {
+ return (
+   <View>
+     <Button title="Read user data"
+       onPress={()=> {
+         AsyncStorage.getItem("user", function(error, data) {
+           var userData = JSON.parse(data);
+           console.log(userData.firstName);  
+         });
+       }}
+     />
+   </View>
+ );
+}
+```
+
+On récupère l’information
+
+```
+AsyncStorage.getItem("user", function(error, data) {
+ var userData = JSON.parse(data);
+ console.log(userData.firstName);  
+});
+```
+
+On redonne vie à notre objet JS
+var userData = JSON.parse(data);
+
+Notre objet (ou tableau) avait été enregistré dans le Local Storage sous forme de chaîne de caractères grâce au JSON.stringify(). Il va donc falloir redonner vie à notre objet en faisant un JSON.parse. Nous retrouvons bien l’objet enregistré dans la variable userData.
+
+
+## 2.6 Supprimer une information
+
+```
+import React from 'react';
+import {Button, View} from "react-native";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+export default function App() {
+    return (
+      <View>
+         <Button title="Delete first name"
+           onPress={()=> AsyncStorage.removeItem("firstName") }
+         />
+      </View>
+    )
+}
+```
+
+On supprime une valeur enregistrée
+AsyncStorage.removeItem("firstName")
+
+Pour supprimer une valeur dans le Local Storage, il suffit d’utiliser removeItem en précisant la clé en premier argument.
+
+L’élément sera alors définitivement supprimé du Local Storage.
+
+## 2.7 Supprimer l’ensemble des informations
+
+```
+import React from 'react';
+import {Button, View} from "react-native";
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+export default function App() {
+
+
+    return (
+      <View>
+         <Button title="Delete all data saved"
+           onPress={()=> AsyncStorage.clear() }
+         />
+      </View>
+    )
+ 
+
+}
+```
+
+On supprime l’ensemble des valeurs
+AsyncStorage.clear()
+
+En utilisant la fonction clear(), on supprime l’ensemble des clés/valeurs enregistrées dans le Local Storage pour votre application.
+
+Cette fonction peut être intéressante quand on souhaite supprimer l’ensemble des informations suite à une mise à jour de votre application ou lorsque vous développez votre application et souhaitez réinitialiser les valeurs pour tester votre application.
