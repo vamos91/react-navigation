@@ -740,3 +740,90 @@ AsyncStorage.clear()
 En utilisant la fonction clear(), on supprime l’ensemble des clés/valeurs enregistrées dans le Local Storage pour votre application.
 
 Cette fonction peut être intéressante quand on souhaite supprimer l’ensemble des informations suite à une mise à jour de votre application ou lorsque vous développez votre application et souhaitez réinitialiser les valeurs pour tester votre application.
+
+
+---------------------------------------------------------------------------------------------------------------------------------
+# Cloudinary
+
+**Cloudinary est un service cloud qui nous propose des services pour gérer nos images et vidéos. Nous allons pouvoir uploader, stocker, administrer et charger nos images, vidéos et fichiers PDF.**
+
+## 1.1 Cloudinary, un CDN ?
+Le principal intérêt d’utiliser ce genre de solution est de ne pas encombrer votre serveur. Effectivement, l’hébergement des photos ou vidéos sur votre serveur nécessite de l’espace disque, mais également de la bande passante et des ressources importantes. Plus il y aura de requêtes qui sollicitent votre serveur pour afficher des photos, moins il sera disponible pour répondre aux autres requêtes.
+
+__Il est donc vivement déconseillé de se servir du Backend pour stocker vos médias.__
+
+De plus, Cloudinary diffuse nos médias via un réseau de diffusion de contenu rapide, appelé Content Delivery Network (CDN). Vos médias seront stockés et dupliqués dans différents serveurs dans le monde qui pourront charger vos médias de manière totalement optimisée.
+
+## 1.2 D’autres services ?
+Cloudinary propose également un ensemble de services à la volée pour optimiser la gestion des images et vidéos : redimensionner, appliquer une rotation, découper, appliquer des filtres à la volée sur nos photos ou vidéos.
+
+
+# 2 - STEP BY STEP
+## 2.1 Installation du module
+
+```
+npm install --save cloudinary
+```
+
+## 2.2 Import dans le projet
+
+```
+var cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+ cloud_name: 'cdijakqjo',
+ api_key: '767287109552128',
+ api_secret: 'BRfbaQzy3xSWMq0NDAqdLASA9nfo' 
+});
+```
+
+Nous allons importer la v2 de Cloudinary dans notre projet.
+
+Il est nécessaire de créer un compte Cloudinary et de récupérer les différentes informations pour paramétrer notre Backend.
+
+## 2.3 Envoyer la photo
+
+```
+router.post('/upload', async function(req, res, next) {
+  var resultCloudinary = await cloudinary.uploader.upload("./tmp/avatar.jpg");
+  res.json(resultCloudinary);
+});
+```
+
+Pour envoyer notre photo dans le cloud, on utilise cloudinary.uploader.upload() en fournissant le chemin de notre image en argument de la méthode upload.
+
+“upload” étant asynchrone, nous allons temporiser notre requête.
+
+Dès que l’image est uploadée sur le cloud, Cloudinary nous renvoie un ensemble d’information sur la photo uploadée (notamment l’URL de la photo sur le cloud)
+
+## 2.4 Suppression de l’image temporaire
+
+```
+var fs = require('fs');
+var uniqid = require('uniqid');
+
+router.post('/upload', async function(req, res, next) {
+
+  var imagePath = './tmp/'+uniqid()+'.jpg';
+  var resultCloudinary = await cloudinary.uploader.upload(imagePath);
+
+  fs.unlinkSync(imagePath);
+
+  res.json(resultCloudinary);
+});
+```
+
+__La photo est désormais uploadée sur le cloud, il n’est plus nécessaire de conserver la photo sur le Backend, nous allons donc la supprimer.__
+
+Intégration du file system dans notre Backend
+```
+var fs = require('fs')
+```
+Pas besoin d’installer un nouveau module. File System est déjà utilisable.
+
+File System (fs) nous permet de manipuler des fichiers à l’intérieur de notre Backend : lecture, création, modification, suppression, renommage des fichiers.
+
+Suppression du fichier en Backend
+fs.unlinkSync(imagePath);
+
+Pour supprimer un fichier, File System propose la méthode unlinkSync(). Il suffit de fournir le chemin de l’image en argument de cette méthode pour supprimer physiquement notre fichier dans le Backend.
